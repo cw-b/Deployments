@@ -4,3 +4,4 @@
 123, 456, DEPLOYING
 123, 456, DEPLOYED
 123, 456, DEPLOYING, cw-b/Example-Service, refs/heads/main, 6f122352807051addbf1fcd6a9d4aec617d4624f, __run, 11854813644, cwbeck
+123, 456, DEPLOYED, cw-b/Example-Service, refs/heads/main, 6f122352807051addbf1fcd6a9d4aec617d4624f, __run, 11854813644, cwbeck
