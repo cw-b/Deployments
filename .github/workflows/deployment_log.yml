@@ -1,0 +1,45 @@
+name: Deployment Log Workflow
+
+on:
+    workflow_call:
+        inputs:
+            deployment_id:
+                required: true
+                type: string
+            release_id:
+                required: true
+                type: string
+            state:
+                required: true
+                type: string
+
+jobs:
+    write_log:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  repository: cw-b/Deployments
+                  token: ${{ secrets.DEPLOYMENTS_PAT }}
+
+            - name: Append to log
+              run: |
+                  echo "${{ inputs.deployment_id }}, ${{ inputs.release_id }}, ${{ inputs.state }}" >> log.txt
+
+            - name: Configure Git
+              run: |
+                  git config --global user.name "github-actions[bot]"
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+            - name: Commit changes
+              run: |
+                  git add .
+                  git commit -m "Automated commit"
+
+            - name: Push changes
+              env:
+                  GITHUB_TOKEN: ${{ secrets.DEPLOYMENTS_PAT }}
+              run: |
+                  git push origin main
