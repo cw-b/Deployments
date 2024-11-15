@@ -12,6 +12,9 @@ on:
             state:
                 required: true
                 type: string
+        secrets:
+            token: 
+                required: true
 
 jobs:
     write_log:
