@@ -29,7 +29,7 @@ jobs:
 
             - name: Append to log
               run: |
-                  echo "${{ inputs.deployment_id }}, ${{ inputs.release_id }}, ${{ inputs.state }}" >> log.txt
+                  echo "${{ inputs.deployment_id }}, ${{ inputs.release_id }}, ${{ inputs.state }}, ${{ github.repository }}, ${{ github.ref }}, ${{ github.sha }}, ${{ github.action }}, ${{ github.run_id }}, ${{ github.actor }}" >> log.txt
 
             - name: Configure Git
               run: |
