@@ -13,7 +13,7 @@ on:
                 required: true
                 type: string
         secrets:
-            token: 
+            DEPLOYMENTS_PAT: 
                 required: true
 
 jobs:
