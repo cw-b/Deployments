@@ -34,6 +34,7 @@ jobs:
               run: |
                   DEPLOYMENT_REPO=$(basename "${{ github.repository }}")
                   LOG_FILE_DIR="$(date -u +"%Y/%m/%d")/$DEPLOYMENT_REPO/${{ inputs.TENANT }}"
+                  echo "DEPLOYMENT_REPO=$DEPLOYMENT_REPO" >> $GITHUB_ENV
                   echo "LOG_FILE_DIR=$LOG_FILE_DIR" >> $GITHUB_ENV
                   echo "LOG_FILE_NAME=$LOG_FILE_DIR/${{ inputs.DEPLOYMENT_ENVIRONMENT }}.log" >> $GITHUB_ENV
                   echo $LOG_FILE_NAME
@@ -44,10 +45,8 @@ jobs:
 
             - name: Append to log
               run: |
-                  run: |
-                      DEPLOYMENT_REPO=$(basename "${{ github.repository }}")
-                      DEPLOYMENT_TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-                      echo "{\"DEPLOYMENT_STATE\": \"${{ inputs.DEPLOYMENT_STATE }}\", \"TS\": \"$DEPLOYMENT_TS\", \"DEPLOYMENT_TOOL\": \"${{ inputs.DEPLOYMENT_TOOL }}\", \"DEPLOYMENT_ENVIRONMENT\": \"${{ inputs.DEPLOYMENT_ENVIRONMENT }}\", \"TENANT\": \"${{ inputs.TENANT }}\", \"ACTOR\": \"${{ github.actor }}\", \"RUN_ID\": \"${{ github.run_id }}\", \"REPO\": \"$DEPLOYMENT_REPO\", \"SHA\": \"${{ github.sha }}\"}" >> $LOG_FILE_NAME
+                  DEPLOYMENT_TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+                  echo "{\"DEPLOYMENT_STATE\": \"${{ inputs.DEPLOYMENT_STATE }}\", \"TS\": \"$DEPLOYMENT_TS\", \"DEPLOYMENT_TOOL\": \"${{ inputs.DEPLOYMENT_TOOL }}\", \"DEPLOYMENT_ENVIRONMENT\": \"${{ inputs.DEPLOYMENT_ENVIRONMENT }}\", \"TENANT\": \"${{ inputs.TENANT }}\", \"ACTOR\": \"${{ github.actor }}\", \"RUN_ID\": \"${{ github.run_id }}\", \"REPO\": \"$DEPLOYMENT_REPO\", \"SHA\": \"${{ github.sha }}\"}" >> $LOG_FILE_NAME
 
             - name: Configure Git
               run: |
