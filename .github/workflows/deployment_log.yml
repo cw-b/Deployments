@@ -39,7 +39,7 @@ jobs:
             - name: Validate DEPLOYMENT_TOOL Input
               run: |
                   if [[ ! " STRATUS CLARITY OCTOPUS " =~ " ${{ inputs.DEPLOYMENT_TOOL }} " ]]; then
-                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are STRATUS, CLARITY, OCTOPUS."
+                      echo "Error: Invalid DEPLOYMENT_TOOL value. Allowed values are STRATUS, CLARITY, OCTOPUS."
                       exit 1
                   fi
               shell: bash
@@ -47,7 +47,7 @@ jobs:
             - name: Validate DEPLOYMENT_ENVIRONMENT Input
               run: |
                   if [[ ! " DEVELOPMENT STAGING PRODUCTION " =~ " ${{ inputs.DEPLOYMENT_ENVIRONMENT }} " ]]; then
-                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are DEVELOPMENT, STAGING, PRODUCTION."
+                      echo "Error: Invalid DEPLOYMENT_ENVIRONMENT value. Allowed values are DEVELOPMENT, STAGING, PRODUCTION."
                       exit 1
                   fi
               shell: bash
@@ -55,7 +55,7 @@ jobs:
             - name: Validate TENANT Input
               run: |
                   if [[ ! " NDC A0T " =~ " ${{ inputs.TENANT }} " ]]; then
-                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are NDC, A0T."
+                      echo "Error: Invalid TENANT value. Allowed values are NDC, A0T."
                       exit 1
                   fi
               shell: bash
