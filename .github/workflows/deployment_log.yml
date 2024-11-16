@@ -4,15 +4,19 @@ on:
     workflow_call:
         inputs:
             DEPLOYMENT_STATE:
+                description: 'Deployment state (DEPLOY_STARTED, DEPLOY_COMPLETED, DEPLOY_FAILED)'
                 required: true
                 type: string
             DEPLOYMENT_TOOL:
+                description: 'Deployment tool (STRATUS, CLARITY, OCTOPUS)'
                 required: true
                 type: string
             DEPLOYMENT_ENVIRONMENT:
+                description: 'Deployment environment (DEVELOPMENT, STAGING, PRODUCTION)'
                 required: true
                 type: string
             TENANT:
+                description: 'Tenant (NDC, A0T)'
                 required: true
                 type: string
         secrets:
@@ -24,6 +28,38 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: Validate DEPLOYMENT_STATE Input
+              run: |
+                 if [[ ! " DEPLOY_STARTED DEPLOY_COMPLETED DEPLOY_FAILED " =~ " ${{ inputs.DEPLOYMENT_STATE }} " ]]; then
+                     echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are DEPLOY_STARTED, DEPLOY_COMPLETED, DEPLOY_FAILED."
+                     exit 1
+                 fi
+              shell: bash
+
+            - name: Validate DEPLOYMENT_TOOL Input
+              run: |
+                  if [[ ! " STRATUS CLARITY OCTOPUS " =~ " ${{ inputs.DEPLOYMENT_TOOL }} " ]]; then
+                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are STRATUS, CLARITY, OCTOPUS."
+                      exit 1
+                  fi
+              shell: bash
+
+            - name: Validate DEPLOYMENT_ENVIRONMENT Input
+              run: |
+                  if [[ ! " DEVELOPMENT STAGING PRODUCTION " =~ " ${{ inputs.DEPLOYMENT_ENVIRONMENT }} " ]]; then
+                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are DEVELOPMENT, STAGING, PRODUCTION."
+                      exit 1
+                  fi
+              shell: bash
+              
+            - name: Validate TENANT Input
+              run: |
+                  if [[ ! " NDC A0T " =~ " ${{ inputs.TENANT }} " ]]; then
+                      echo "Error: Invalid DEPLOYMENT_STATE value. Allowed values are NDC, A0T."
+                      exit 1
+                  fi
+              shell: bash
+
             - name: Checkout repository
               uses: actions/checkout@v4
               with:
