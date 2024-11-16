@@ -3,17 +3,20 @@ name: Deployment Log Workflow
 on:
     workflow_call:
         inputs:
-            deployment_id:
+            DEPLOYMENT_STATE:
                 required: true
                 type: string
-            release_id:
+            DEPLOYMENT_TOOL:
                 required: true
                 type: string
-            state:
+            DEPLOYMENT_ENVIRONMENT:
+                required: true
+                type: string
+            TENANT:
                 required: true
                 type: string
         secrets:
-            DEPLOYMENTS_PAT: 
+            DEPLOYMENTS_PAT:
                 required: true
 
 jobs:
@@ -27,9 +30,24 @@ jobs:
                   repository: cw-b/Deployments
                   token: ${{ secrets.DEPLOYMENTS_PAT }}
 
+            - name: Define Log File Vars
+              run: |
+                  DEPLOYMENT_REPO=$(basename "${{ github.repository }}")
+                  LOG_FILE_DIR="$(date -u +"%Y/%m/%d")/$DEPLOYMENT_REPO/${{ inputs.TENANT }}"
+                  echo "LOG_FILE_DIR=$LOG_FILE_DIR" >> $GITHUB_ENV
+                  echo "LOG_FILE_NAME=$LOG_FILE_DIR/${{ inputs.DEPLOYMENT_ENVIRONMENT }}.log" >> $GITHUB_ENV
+                  echo $LOG_FILE_NAME
+
+            - name: Create Log File Directory
+              run: |
+                  mkdir -p "$LOG_FILE_DIR"
+
             - name: Append to log
               run: |
-                  echo "${{ inputs.deployment_id }}, ${{ inputs.release_id }}, ${{ inputs.state }}, ${{ github.repository }}, ${{ github.ref }}, ${{ github.sha }}, ${{ github.action }}, ${{ github.run_id }}, ${{ github.actor }}" >> log.txt
+                  run: |
+                      DEPLOYMENT_REPO=$(basename "${{ github.repository }}")
+                      DEPLOYMENT_TS=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+                      echo "{\"DEPLOYMENT_STATE\": \"${{ inputs.DEPLOYMENT_STATE }}\", \"TS\": \"$DEPLOYMENT_TS\", \"DEPLOYMENT_TOOL\": \"${{ inputs.DEPLOYMENT_TOOL }}\", \"DEPLOYMENT_ENVIRONMENT\": \"${{ inputs.DEPLOYMENT_ENVIRONMENT }}\", \"TENANT\": \"${{ inputs.TENANT }}\", \"ACTOR\": \"${{ github.actor }}\", \"RUN_ID\": \"${{ github.run_id }}\", \"REPO\": \"$DEPLOYMENT_REPO\", \"SHA\": \"${{ github.sha }}\"}" >> $LOG_FILE_NAME
 
             - name: Configure Git
               run: |
@@ -39,7 +57,7 @@ jobs:
             - name: Commit changes
               run: |
                   git add .
-                  git commit -m "Automated commit"
+                  git commit -m "Logging deployment state of ${{ inputs.DEPLOYMENT_STATE }} to ${{ inputs.DEPLOYMENT_ENVIRONMENT }} on ${{ inputs.TENANT }} for ${{ github.repository }}"
 
             - name: Push changes
               env:
